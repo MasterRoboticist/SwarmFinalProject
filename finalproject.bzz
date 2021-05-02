@@ -1,7 +1,7 @@
-numClasses = 5
+numClasses = 2
 angleRange = 0.1745  #10 degrees in radians (means 20 degree view angle)
 fieldSize = 400 # I don't know what this actually is,  but 400 is big enough
-maxColors = 255 * 3 # 255 for each of r, g, and b
+maxColors = 255 * 6 # 255 for each of r, g, and b
 
 # wheel speeds
 vl0 = -1.0
@@ -24,15 +24,16 @@ function init() {
   neighbors.listen("Color",
     function(topic, value, robot){
       #log("Got (", topic, ",", value, ") from robot id=", robot)
-			neighborColors.robot = value
+			neighborColors[robot] = value
 			#log(neighborColors.robot)
+			#other = robot-1
+			#log(neighborColors.other)
     })
 }
 
 
 
 function step() {
-
 	# find closest neighbor
 	closestNeighborId = -1
 	closestDist = 2*fieldSize # some larger than maximum distance
@@ -55,8 +56,8 @@ function step() {
 
 	# if a closest neighbor was found, determine which reaction is appropriate
 	if(closestNeighborId > -1){
-		otherClass = neighborColors.closestNeighborId
-		#log("otherClass = ", otherClass, " class = ", class)
+		otherClass = neighborColors[closestNeighborId]
+		log("otherClass = ", otherClass, " class = ", class)
 		# robot is of same class
 		if(class == otherClass){ reaction = 1 }
 		# robot is of different class
@@ -71,7 +72,7 @@ function step() {
 		set_wheels(vl1*speedMultiplier, vr1*speedMultiplier)
 	}
 	else{
-		set_wheels(vl2*speedMultiplier, vr2speedMultiplier)
+		set_wheels(vl2*speedMultiplier, vr2*speedMultiplier)
 	}
 
 	# make the robots pretty color based on class and total number of classes
@@ -100,7 +101,7 @@ function abs(num){
 # goes through a full gradient of a subset of colors
 function setColor(cls){
 	# determine color based on its class and total num classes
-	color = maxColors/(numClasses-1)*cls
+	color = maxColors/(numClasses)*cls
 
 	# be black, then red, then yellow, then white then cyan, then blue, then black
 	if(color < 255){ set_leds(color, 0, 0) }
