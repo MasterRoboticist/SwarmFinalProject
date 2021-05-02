@@ -1,0 +1,111 @@
+numClasses = 5
+angleRange = 0.1745  #10 degrees in radians (means 20 degree view angle)
+fieldSize = 400 # I don't know what this actually is,  but 400 is big enough
+maxColors = 255 * 3 # 255 for each of r, g, and b
+
+# wheel speeds
+vl0 = -1.0
+vr0 = 0.33
+vl1 = 0.33
+vr1 = 1.0
+vl2 = -1.0
+vr2 = 1.0
+speedMultiplier = 20.0 # multiplier to make speed faster/slower
+
+
+function init() {
+  # Pick a random initial value for the counter
+  math.rng.setseed(id)
+  class = id%numClasses
+	state = 0
+	neighborColors = {}
+
+  # Listen to messages about a robot's color
+  neighbors.listen("Color",
+    function(topic, value, robot){
+      #log("Got (", topic, ",", value, ") from robot id=", robot)
+			neighborColors.robot = value
+			#log(neighborColors.robot)
+    })
+}
+
+
+
+function step() {
+
+	# find closest neighbor
+	closestNeighborId = -1
+	closestDist = 2*fieldSize # some larger than maximum distance
+	neighbors.foreach(
+  	function(rid, data) {
+			angle = abs(data.azimuth)
+			# if the neighbor is within view range of the robot
+			if(angle < angleRange or 3.14+angle < angleRange){
+				#log("robot ", rid,": azimuth:",angle, " d = ", data.distance)
+				#remember the closest robot
+				if (closestDist > data.distance){
+					#log("robot ", rid, " is closest, d = ", data.distance)
+					closestNeighborId = rid
+					closestDist = data.distance
+				}
+			}
+	})
+
+	reaction = 0
+
+	# if a closest neighbor was found, determine which reaction is appropriate
+	if(closestNeighborId > -1){
+		otherClass = neighborColors.closestNeighborId
+		#log("otherClass = ", otherClass, " class = ", class)
+		# robot is of same class
+		if(class == otherClass){ reaction = 1 }
+		# robot is of different class
+		else { reaction = 2 } # this never happens because otherClass is nil
+
+	# set wheel speeds
+	if(reaction == 0){
+		set_wheels(vl0*speedMultiplier, vr0*speedMultiplier)
+	}
+	else if(reaction == 1){
+		set_wheels(vl1*speedMultiplier, vr1*speedMultiplier)
+	}
+	else{
+		set_wheels(vl2*speedMultiplier, vr2speedMultiplier)
+	}
+
+	# make the robots pretty color based on class and total number of classes
+	setColor(class)
+
+  # Send a message to other robots about color
+   neighbors.broadcast("Color", class)
+
+  # Debug message written on top of robot
+  debug.print("r=", reaction)
+  
+}
+
+function reset() {
+}
+
+function destroy() {
+}
+
+function abs(num){
+	if(num < 0) { return num*-1}
+	return num
+}
+
+# set color of leds on robot based on their class
+# goes through a full gradient of a subset of colors
+function setColor(cls){
+	# determine color based on its class and total num classes
+	color = maxColors/(numClasses-1)*cls
+
+	# be black, then red, then yellow, then white then cyan, then blue, then black
+	if(color < 255){ set_leds(color, 0, 0) }
+	else if (color < 255*2) {set_leds(255,color%255,0)}
+	else if (color < 255*3) {set_leds(255,255,color%255)}
+	else if (color < 255*4) {set_leds(255-color%255, 255, 255)}
+	else if (color < 255*5) {set_leds(0, 255-color%255, 255)}
+	else {set_leds(0,0(255-color%255)}
+}
