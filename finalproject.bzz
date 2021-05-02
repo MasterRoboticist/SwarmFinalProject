@@ -61,6 +61,7 @@ function step() {
 		if(class == otherClass){ reaction = 1 }
 		# robot is of different class
 		else { reaction = 2 } # this never happens because otherClass is nil
+	}
 
 	# set wheel speeds
 	if(reaction == 0){
@@ -107,5 +108,5 @@ function setColor(cls){
 	else if (color < 255*3) {set_leds(255,255,color%255)}
 	else if (color < 255*4) {set_leds(255-color%255, 255, 255)}
 	else if (color < 255*5) {set_leds(0, 255-color%255, 255)}
-	else {set_leds(0,0(255-color%255)}
+	else {set_leds(0,0,(255-color%255))}
 }
