@@ -12,6 +12,9 @@ vl2 = -1.0
 vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
+N = 25
+K = 5
+
 
 function init() {
   # Pick a random initial value for the counter
@@ -59,9 +62,11 @@ function step() {
 		otherClass = neighborColors[closestNeighborId]
 		log("otherClass = ", otherClass, " class = ", class)
 		# robot is of same class
-		if(class == otherClass){ reaction = 1 }
+		if(((class + N) > otherClass) and ((class - N) < otherClass)){ reaction = 1 }
 		# robot is of different class
 		else { reaction = 2 } # this never happens because otherClass is nil
+		if(class > otherClass) { class = class - K }
+		else { class = class + K }
 	}
 
 	# set wheel speeds
