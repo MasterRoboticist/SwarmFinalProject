@@ -1,4 +1,4 @@
-numClasses = 2
+numClasses = 255 * 6
 angleRange = 0.1745  #10 degrees in radians (means 20 degree view angle)
 fieldSize = 400 # I don't know what this actually is,  but 400 is big enough
 maxColors = 255 * 6 # 255 for each of r, g, and b
@@ -19,7 +19,7 @@ K = 5
 function init() {
   # Pick a random initial value for the counter
   math.rng.setseed(id)
-  class = id%numClasses
+  class = math.rng.uniform(numClasses)
 	state = 0
 	neighborColors = {}
 
