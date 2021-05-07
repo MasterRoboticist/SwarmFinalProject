@@ -16,6 +16,9 @@ N = 200
 K = 25
 
 
+#Here I try to open a text document called info
+data = io.fopen("/info.txt","a+")
+
 function init() {
   # Pick a random initial value for the counter
   math.rng.setseed(id)
@@ -32,8 +35,6 @@ function init() {
 			#other = robot-1
 			#log(neighborColors.other)
     })
-	#Here I try to open a text document called info
-	#data = io.fopen("info","a+")
 }
 
 
@@ -92,7 +93,9 @@ function step() {
   debug.print("r=", reaction)
 	
 	#This is where I try to fill in the text document.
-  #data.fwrite("class", class)
+	if(data) {
+  	io.fwrite(data, "class", class)
+	}
 }
 
 function reset() {
