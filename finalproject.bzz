@@ -16,8 +16,9 @@ N = 200
 K = 25
 
 
+
 #Here I try to open a text document called info
-data = io.fopen("/info.txt","a+")
+data = io.fopen("info","w")
 
 function init() {
   # Pick a random initial value for the counter
@@ -93,15 +94,18 @@ function step() {
   debug.print("r=", reaction)
 	
 	#This is where I try to fill in the text document.
-	if(data) {
-  	io.fwrite(data, "class", class)
+	if(not data) {
+  	log(io.error_message, "(", io.errno, ")")
 	}
+	io.fwrite(data, "Test")
+	
 }
 
 function reset() {
 }
 
 function destroy() {
+	io.fclose(data)
 }
 
 function abs(num){
