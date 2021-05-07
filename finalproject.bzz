@@ -13,7 +13,7 @@ vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
 N = 200
-K = 25
+K = 2
 
 
 
@@ -22,7 +22,7 @@ data = io.fopen("info","w")
 
 function init() {
   # Pick a random initial value for the counter
-  math.rng.setseed(id)
+  math.rng.setseed(id*5)
   class = math.rng.uniform(numClasses)
 	state = 0
 	neighborColors = {}
@@ -66,11 +66,15 @@ function step() {
 		otherClass = neighborColors[closestNeighborId]
 		log("otherClass = ", otherClass, " class = ", class)
 		# robot is of same class
-		if(((class + N) > otherClass) and ((class - N) < otherClass)){ reaction = 1 }
-		# robot is of different class
-		else { reaction = 2 } # this never happens because otherClass is nil
-		if(class > otherClass) { class = class - K }
-		else { class = class + K }
+		if(otherClass != nil){
+			if(minDist(otherClass) < N){ reaction = 1 }
+			# robot is of different class
+			else { reaction = 2 } 
+		}
+		if(otherClass != nil){
+			if(class > otherClass) { class = (class - K)%numClasses }
+			else { class = (class + K)%numClasses }
+		}
 	}
 
 	# set wheel speeds
@@ -126,4 +130,23 @@ function setColor(cls){
 	else if (color < 255*4) {set_leds(255-color%255, 255, 255)}
 	else if (color < 255*5) {set_leds(0, 255-color%255, 255)}
 	else {set_leds(0,0,(255-color%255))}
+}
+
+function minDist(otherClass){
+	# check normal case
+	normalDist = math.abs(class - otherClass)
+	
+	# check case where wraps around
+	# adds distances between the classes and the max/min classes and compares to N
+	wraparoundDist = math.min((numClasses - otherClass), otherClass) + math.min(numClasses - class, class)
+
+	return math.min(normalDist, wraparoundDist)
+}
+
+function shouldGetSmaller(otherClass){
+	minD = minDist(otherClass)
+	if(math.abs(otherClass - class) == minD){
+		return class > otherClass
+	}
+	else {return otherClass > class}
 }
