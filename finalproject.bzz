@@ -12,8 +12,8 @@ vl2 = -1.0
 vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
-N = 25
-K = 5
+N = 200
+K = 25
 
 
 function init() {
@@ -32,6 +32,8 @@ function init() {
 			#other = robot-1
 			#log(neighborColors.other)
     })
+	#Here I try to open a text document called info
+	#data = io.fopen("info","a+")
 }
 
 
@@ -88,7 +90,9 @@ function step() {
 
   # Debug message written on top of robot
   debug.print("r=", reaction)
-  
+	
+	#This is where I try to fill in the text document.
+  #data.fwrite("class", class)
 }
 
 function reset() {
