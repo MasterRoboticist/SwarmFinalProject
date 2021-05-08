@@ -13,14 +13,12 @@ vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
 N = 200
-K = 2
+K = 5
 
-
-
-#Here I try to open a text document called info
-data = io.fopen("info","w")
 
 function init() {
+	#Here I try to open a text document called info
+	data = io.fopen("info","w")
   # Pick a random initial value for the counter
   math.rng.setseed(id*5)
   class = math.rng.uniform(numClasses)
@@ -72,8 +70,9 @@ function step() {
 			else { reaction = 2 } 
 		}
 		if(otherClass != nil){
-			if(class > otherClass) { class = (class - K)%numClasses }
-			else { class = (class + K)%numClasses }
+			class = (class + signK(otherClass)*K)%numClasses
+			#if(class > otherClass) { class = (class - K)%numClasses }
+			#else { class = (class + K)%numClasses }
 		}
 	}
 
@@ -143,10 +142,12 @@ function minDist(otherClass){
 	return math.min(normalDist, wraparoundDist)
 }
 
-function shouldGetSmaller(otherClass){
-	minD = minDist(otherClass)
-	if(math.abs(otherClass - class) == minD){
-		return class > otherClass
-	}
-	else {return otherClass > class}
+function signK(otherClass){
+	
+	return sign((class - otherClass)%numClasses - numClasses/2)
+}
+
+function sign(num){
+	if(num < 0){return -1}
+	else {return 1}
 }
