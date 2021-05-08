@@ -12,13 +12,15 @@ vl2 = -1.0
 vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
-N = 200
+N = 100
 K = 5
 
 
 function init() {
-	#Here I try to open a text document called info
-	data = io.fopen("info","w")
+	#Here I try to open a tfcloseext document called info
+	datat = io.fopen("info.txt","w")
+	log("Data is : ", datat)
+
   # Pick a random initial value for the counter
   math.rng.setseed(id*5)
   class = math.rng.uniform(numClasses)
@@ -97,14 +99,16 @@ function step() {
   debug.print("r=", reaction)
 	
 	#This is where I try to fill in the text document.
-	if(not data) {
-  	log(io.error_message, "(", io.errno, ")")
+
+	if(datat != nil) {
+		io.fwrite(datat,id)
 	}
-	io.fwrite(data, "Test")
+	else { log(io.error_message, "(", io.errno, ")", " Could not write data")}
 	
 }
 
 function reset() {
+	#io.fclose(data)
 }
 
 function destroy() {
