@@ -17,12 +17,16 @@ K = 5
 
 
 function init() {
+	seed = id*5
+	#name = string.concat("Data/info", string.tostring(id), ".txt")
 	#Here I try to open a tfcloseext document called info
-	datat = io.fopen("info.txt","w")
-	log("Data is : ", datat)
+	#datat = io.fopen(name,"w")
+	#log("Data is : ", datat)
+	#initData = string.concat(string.tostring(N), ", ", string.tostring(K), ", ", string.tostring(seed))
+	#io.fwrite(datat,initData)
 
   # Pick a random initial value for the counter
-  math.rng.setseed(id*5)
+  math.rng.setseed(seed)
   class = math.rng.uniform(numClasses)
 	state = 0
 	neighborColors = {}
@@ -41,6 +45,9 @@ function init() {
 
 
 function step() {
+log("stimulus: ", stimulus)
+threshold = { .0 = 100, .1 = 50}
+	#log(stimulus[0], ", ", stimulus[1])
 	# find closest neighbor
 	closestNeighborId = -1
 	closestDist = 2*fieldSize # some larger than maximum distance
@@ -64,7 +71,7 @@ function step() {
 	# if a closest neighbor was found, determine which reaction is appropriate
 	if(closestNeighborId > -1){
 		otherClass = neighborColors[closestNeighborId]
-		log("otherClass = ", otherClass, " class = ", class)
+		#log("otherClass = ", otherClass, " class = ", class)
 		# robot is of same class
 		if(otherClass != nil){
 			if(minDist(otherClass) < N){ reaction = 1 }
@@ -100,10 +107,10 @@ function step() {
 	
 	#This is where I try to fill in the text document.
 
-	if(datat != nil) {
-		io.fwrite(datat,id)
-	}
-	else { log(io.error_message, "(", io.errno, ")", " Could not write data")}
+	#if(datat != nil) {
+	#	io.fwrite(datat,class)
+	#}
+	#else { log(io.error_message, "(", io.errno, ")", " Could not write data")}
 	
 }
 
@@ -112,7 +119,7 @@ function reset() {
 }
 
 function destroy() {
-	io.fclose(data)
+	#io.fclose(data)
 }
 
 function abs(num){

@@ -1,2 +1,6 @@
 *.bdb
 *.bo
+build/*
+Data/*
+.idea*
+data.dat
