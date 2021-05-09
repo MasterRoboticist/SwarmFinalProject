@@ -111,7 +111,7 @@
                   outfile="data.dat"
                   delta="10"
                   alpha="20"
-                  tasks="2">
+                  numClasses="1536">
 
   </loop_functions>  
 
