@@ -3,6 +3,7 @@
 
 #include <buzz/argos/buzz_loop_functions.h>
 #include <argos3/core/utility/math/rng.h>
+#include <argos3/plugins/robots/generic/control_interface/ci_positioning_sensor.h>
 
 class CThresholdModel : public CBuzzLoopFunctions {
 

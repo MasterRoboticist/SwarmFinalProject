@@ -85,6 +85,7 @@
       -->
       <sensors>
       <range_and_bearing implementation="medium" medium="rab" show_rays="true" noise_std_dev="0" />
+      <positioning implementation="default" />
     </sensors>
       <!--
           The <params> section is passed to the Buzz C++ controller.
