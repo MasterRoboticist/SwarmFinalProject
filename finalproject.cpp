@@ -38,29 +38,29 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       m_vecRobotsClasses[t_vm->robot] = nClass;
 
       /* Get the current thresholds */
-//      BuzzTableOpen(t_vm, "threshold");
-//      buzzobj_t tThreshold = BuzzGet(t_vm, "threshold");
+      BuzzTableOpen(t_vm, "position");
+      buzzobj_t tPosition = BuzzGet(t_vm, "position");
       /* Make sure it's the type we expect (a table) */
-//      if(!buzzobj_istable(tThreshold)) {
-//         LOGERR << str_robot_id << ": variable 'threshold' has wrong type " << buzztype_desc[tThreshold->o.type] << std::endl;
-//         return;
-//      }
+      if(!buzzobj_istable(tPosition)) {
+         LOGERR << str_robot_id << ": variable 'position' has wrong type " << buzztype_desc[tPosition->o.type] << std::endl;
+         return;
+      }
       /* Get the values */
-//      m_vecRobotsThresholds[t_vm->robot].resize(m_vecClassCounts.size(), 0.0);
-//      for(int i = 0; i < m_vecClassCounts.size(); ++i) {
+      m_vecRobotsPositions[t_vm->robot].resize(2, 0.0);
+      for(int i = 0; i < 2; ++i) {
          /* Get the object */
-//         buzzobj_t tThresholdValue = BuzzTableGet(t_vm, i);
+         buzzobj_t tPositionValue = BuzzTableGet(t_vm, i);
          /* Make sure it's the type we expect (a float) */
-//         if(!buzzobj_isfloat(tThresholdValue)) {
-//            LOGERR << str_robot_id << ": element 'threshold[" << i << "]' has wrong type " << buzztype_desc[tThresholdValue->o.type] << std::endl;
-//         }
-//         else {
+         if(!buzzobj_isfloat(tPositionValue)) {
+            LOGERR << str_robot_id << ": element 'position[" << i << "]' has wrong type " << buzztype_desc[tPositionValue->o.type] << std::endl;
+         }
+         else {
             /* Get the value */
-//            float fThresholdValue = buzzobj_getfloat(tThresholdValue);
+            float fPositionValue = buzzobj_getfloat(tPositionValue);
             /* Set the mapping */
-//            m_vecRobotsThresholds[t_vm->robot][i] = fThresholdValue;
-//         }
-//      }
+            m_vecRobotsPositions[t_vm->robot][i] = fPositionValue;
+         }
+      }
    }
 
    /** Task counter */
@@ -68,7 +68,7 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
    /* Task-robot mapping */
    std::map<int,int> m_vecRobotsClasses;
    /* Robot-threshold mapping */
-//   std::map<int,std::vector<float> > m_vecRobotsThresholds;
+   std::map<int,std::vector<float> > m_vecRobotsPositions;
 };
 
 /****************************************/
@@ -116,7 +116,6 @@ void CThresholdModel::Init(TConfigurationNode& t_tree) {
 //   for(int i = 0; i < m_vecStimuli.size(); ++i) {
 //      m_vecStimuli[i] = 50;
 //   }
-    LOGERR << ": init in cpp " << std::endl;
 
     /* Open the output file */
    m_cOutFile.open(m_strOutFile.c_str(),
@@ -133,8 +132,6 @@ void CThresholdModel::Reset() {
 //   }
    /* Convey the stimuli to every robot */
 //   BuzzForeachVM(PutStimuli(m_vecStimuli));
-    LOGERR << ": reset " << std::endl;
-
     /* Reset the output file */
    m_cOutFile.open(m_strOutFile.c_str(),
                    std::ofstream::out | std::ofstream::trunc);
@@ -145,8 +142,6 @@ void CThresholdModel::Reset() {
 /****************************************/
 
 void CThresholdModel::Destroy() {
-    LOGERR << ": destroy " << std::endl;
-
     m_cOutFile.close();
 }
 
@@ -157,9 +152,7 @@ void CThresholdModel::PostStep() {
    /* Get robot data */
    GetRobotData cGetRobotData(1536);
 
-    LOGERR << ": step " << std::endl;
-
-//   BuzzForeachVM(cGetRobotData);
+   BuzzForeachVM(cGetRobotData);
    /* Update the stimuli */
 //   for(int i = 0; i < m_vecStimuli.size(); ++i) {
 //      m_vecStimuli[i] += m_fDelta - m_fAlpha / GetNumRobots() * cGetRobotData.m_vecClassCounts[i];
@@ -186,18 +179,15 @@ void CThresholdModel::PostStep() {
          m_cOutFile << GetSpace().GetSimulationClock() << "\t"
                     << i << "\t"
                     << cGetRobotData.m_vecRobotsClasses[i];
-//         for(int j = 0; j < m_vecStimuli.size(); ++j) {
-//            m_cOutFile << "\t" << cGetRobotData.m_vecRobotsThresholds[i][j];
-//         }
-            LOGERR << "Wrote: " << GetSpace().GetSimulationClock()
-                                << i
-                                << cGetRobotData.m_vecRobotsClasses[i]
-                                << std::endl;
+         for(int j = 0; j < 2; ++j) {
+            m_cOutFile << "\t" << cGetRobotData.m_vecRobotsPositions[i][j];
+         }
          m_cOutFile << std::endl;
       }
    }
-    LOGERR << ": wrote to file " << std::endl;
-
+   else{
+       LOGERR << "vecRobotClasses is empty" << std::endl;
+   }
 }
 
 /****************************************/

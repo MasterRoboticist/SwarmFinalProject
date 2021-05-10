@@ -12,10 +12,9 @@ vl2 = -1.0
 vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
-N = 100
-K = 5
-#class = 0
-
+N = 25
+K = 2
+count = 0
 
 function init() {
 	seed = id*5
@@ -32,6 +31,10 @@ function init() {
 	state = 0
 	neighborColors = {}
 
+	position = {}
+	position[0] = pose['position']['x']
+	position[1] = pose['position']['y']
+
   # Listen to messages about a robot's color
   neighbors.listen("Color",
     function(topic, value, robot){
@@ -46,8 +49,11 @@ function init() {
 
 
 function step() {
-log("stimulus: ", stimulus)
-threshold = { .0 = 100, .1 = 50}
+	log(pose['position']['x'])
+	foreach(pose['position'], function(key, value) {
+      log(key, " -> ", value)
+    })
+  count = count + 1
 	#log(stimulus[0], ", ", stimulus[1])
 	# find closest neighbor
 	closestNeighborId = -1
@@ -99,12 +105,14 @@ threshold = { .0 = 100, .1 = 50}
 
 	# make the robots pretty color based on class and total number of classes
 	setColor(class)
+	position['x'] = pose['position']['x']
+	position['y'] = pose['position']['y']
 
   # Send a message to other robots about color
    neighbors.broadcast("Color", class)
 
   # Debug message written on top of robot
-  debug.print("r=", reaction)
+  debug.print("r=", reaction, "class=", class)
 	
 	#This is where I try to fill in the text document.
 
@@ -112,6 +120,7 @@ threshold = { .0 = 100, .1 = 50}
 	#	io.fwrite(datat,class)
 	#}
 	#else { log(io.error_message, "(", io.errno, ")", " Could not write data")}
+	
 	
 }
 
