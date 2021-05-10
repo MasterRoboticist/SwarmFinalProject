@@ -12,12 +12,12 @@ vl2 = -1.0
 vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
-N = 25
-K = 2
+N = 200
+K = 5
 count = 0
 
 function init() {
-	seed = id*5
+	seed = id
 	#name = string.concat("Data/info", string.tostring(id), ".txt")
 	#Here I try to open a tfcloseext document called info
 	#datat = io.fopen(name,"w")
@@ -31,9 +31,8 @@ function init() {
 	state = 0
 	neighborColors = {}
 
-	position = {}
-	position[0] = pose['position']['x']
-	position[1] = pose['position']['y']
+	posx = pose['position']['x']
+	posy = pose['position']['y']
 
   # Listen to messages about a robot's color
   neighbors.listen("Color",
@@ -49,10 +48,9 @@ function init() {
 
 
 function step() {
-	log(pose['position']['x'])
-	foreach(pose['position'], function(key, value) {
-      log(key, " -> ", value)
-    })
+	#foreach(pose['position'], function(key, value) {
+  #    log(key, " -> ", value)
+   # })
   count = count + 1
 	#log(stimulus[0], ", ", stimulus[1])
 	# find closest neighbor
@@ -105,14 +103,14 @@ function step() {
 
 	# make the robots pretty color based on class and total number of classes
 	setColor(class)
-	position['x'] = pose['position']['x']
-	position['y'] = pose['position']['y']
+	posx = pose['position']['x']
+	posy = pose['position']['y']
 
   # Send a message to other robots about color
    neighbors.broadcast("Color", class)
 
   # Debug message written on top of robot
-  debug.print("r=", reaction, "class=", class)
+  debug.print(class)
 	
 	#This is where I try to fill in the text document.
 

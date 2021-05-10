@@ -4,3 +4,4 @@ build/*
 Data/*
 .idea*
 data.dat
+Test.py

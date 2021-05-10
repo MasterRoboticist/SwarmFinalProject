@@ -38,29 +38,55 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       m_vecRobotsClasses[t_vm->robot] = nClass;
 
       /* Get the current thresholds */
-      BuzzTableOpen(t_vm, "position");
-      buzzobj_t tPosition = BuzzGet(t_vm, "position");
-      /* Make sure it's the type we expect (a table) */
-      if(!buzzobj_istable(tPosition)) {
-         LOGERR << str_robot_id << ": variable 'position' has wrong type " << buzztype_desc[tPosition->o.type] << std::endl;
-         return;
-      }
+//      BuzzTableOpen(t_vm, "position");
+//      buzzobj_t tPosition = BuzzGet(t_vm, "position");
+//      /* Make sure it's the type we expect (a table) */
+//      if(!buzzobj_istable(tPosition)) {
+//         LOGERR << str_robot_id << ": variable 'position' has wrong type " << buzztype_desc[tPosition->o.type] << std::endl;
+//         return;
+//      }
       /* Get the values */
-      m_vecRobotsPositions[t_vm->robot].resize(2, 0.0);
-      for(int i = 0; i < 2; ++i) {
-         /* Get the object */
-         buzzobj_t tPositionValue = BuzzTableGet(t_vm, i);
-         /* Make sure it's the type we expect (a float) */
-         if(!buzzobj_isfloat(tPositionValue)) {
-            LOGERR << str_robot_id << ": element 'position[" << i << "]' has wrong type " << buzztype_desc[tPositionValue->o.type] << std::endl;
-         }
-         else {
-            /* Get the value */
-            float fPositionValue = buzzobj_getfloat(tPositionValue);
-            /* Set the mapping */
-            m_vecRobotsPositions[t_vm->robot][i] = fPositionValue;
-         }
-      }
+//      m_vecRobotsPositions[t_vm->robot].resize(2, 0.0);
+//      for(int i = 0; i < 2; ++i) {
+//         /* Get the object */
+//         buzzobj_t tPositionValue = BuzzTableGet(t_vm, i);
+//         /* Make sure it's the type we expect (a float) */
+//         if(!buzzobj_isfloat(tPositionValue)) {
+//            LOGERR << str_robot_id << ": element 'position[" << i << "]' has wrong type " << buzztype_desc[tPositionValue->o.type] << std::endl;
+//         }
+//         else {
+//            /* Get the value */
+//            float fPositionValue = buzzobj_getfloat(tPositionValue);
+//            /* Set the mapping */
+//            m_vecRobotsPositions[t_vm->robot][i] = fPositionValue;
+//         }
+//      }
+
+       /* Get the current class */
+       buzzobj_t tPosx = BuzzGet(t_vm, "posx");
+       /* Make sure it's the type we expect (an integer) */
+       if(!buzzobj_isfloat(tPosx)) {
+           LOGERR << str_robot_id << ": variable 'posx' has wrong type " << buzztype_desc[tPosx->o.type] << std::endl;
+           return;
+       }
+       /* Get the value */
+       float nPosx = buzzobj_getfloat(tPosx);
+
+       /* Set the mapping */
+       m_vecRobotsPosx[t_vm->robot] = nPosx;
+
+       /* Get the current class */
+       buzzobj_t tPosy = BuzzGet(t_vm, "posy");
+       /* Make sure it's the type we expect (an integer) */
+       if(!buzzobj_isfloat(tPosy)) {
+           LOGERR << str_robot_id << ": variable 'posy' has wrong type " << buzztype_desc[tPosy->o.type] << std::endl;
+           return;
+       }
+       /* Get the value */
+       float nPosy = buzzobj_getfloat(tPosx);
+
+       /* Set the mapping */
+       m_vecRobotsPosy[t_vm->robot] = nPosy;
    }
 
    /** Task counter */
@@ -68,7 +94,12 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
    /* Task-robot mapping */
    std::map<int,int> m_vecRobotsClasses;
    /* Robot-threshold mapping */
-   std::map<int,std::vector<float> > m_vecRobotsPositions;
+   std::map<int,float> m_vecRobotsPosx;
+   std::map<int,float> m_vecRobotsPosy;
+
+
+//   std::map<int,std::vector<float> > m_vecRobotsPosx;
+//   std::map<int,std::vector<float> > m_vecRobotsPosy;
 };
 
 /****************************************/
@@ -178,10 +209,15 @@ void CThresholdModel::PostStep() {
       for(int i = 0; i < GetNumRobots(); ++i) {
          m_cOutFile << GetSpace().GetSimulationClock() << "\t"
                     << i << "\t"
-                    << cGetRobotData.m_vecRobotsClasses[i];
-         for(int j = 0; j < 2; ++j) {
-            m_cOutFile << "\t" << cGetRobotData.m_vecRobotsPositions[i][j];
-         }
+                    << cGetRobotData.m_vecRobotsClasses[i] << "\t"
+                    << cGetRobotData.m_vecRobotsPosx[i] << "\t"
+                    << cGetRobotData.m_vecRobotsPosy[i];
+//         for(int j = 0; j < 2; ++j) {
+//            m_cOutFile << "\t" << cGetRobotData.m_vecRobotsPositions[i][j];
+//            if(i == 1) {
+//                LOGERR << cGetRobotData.m_vecRobotsPositions[i][j] << std::endl;
+//            }
+//         }
          m_cOutFile << std::endl;
       }
    }
