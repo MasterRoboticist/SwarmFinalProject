@@ -12,12 +12,12 @@ vl2 = -1.0
 vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
-N = 200
+N = 100
 K = 5
 count = 0
 
 function init() {
-	seed = id
+	seed = id*8
 	#name = string.concat("Data/info", string.tostring(id), ".txt")
 	#Here I try to open a tfcloseext document called info
 	#datat = io.fopen(name,"w")
