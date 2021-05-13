@@ -1,4 +1,4 @@
-numClasses = 256 * 6
+numClasses = 255 * 6
 angleRange = 0.1745  #10 degrees in radians (means 20 degree view angle)
 fieldSize = 400 # I don't know what this actually is,  but 400 is big enough
 maxColors = 255 * 6 # 255 for each of r, g, and b
@@ -13,11 +13,11 @@ vr2 = 1.0
 speedMultiplier = 20.0 # multiplier to make speed faster/slower
 
 N = 200
-K = 5
+K = 10
 count = 0
 
 function init() {
-	seed = id
+	seed = id*5
 	#name = string.concat("Data/info", string.tostring(id), ".txt")
 	#Here I try to open a tfcloseext document called info
 	#datat = io.fopen(name,"w")

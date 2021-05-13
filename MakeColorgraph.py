@@ -50,10 +50,11 @@ def makeStdDevGraph(data, filename):
         cx,cy = centroid(d)
         dists = [distance(cx,cy,p[0],p[1]) for p in d]
         stdDevs = np.append(stdDevs, np.std(dists))
-    plt.plot(range(len(stdDevs)), stdDevs)
-    plt.title(filename[7:-4])
-    plt.savefig(filename)
-    plt.clf()
+    # plt.plot(range(len(stdDevs)), stdDevs)
+    # plt.title(filename[7:-4])
+    # plt.savefig(filename)
+    # plt.clf()
+    print("for file %s last std dev was %f" % (filename, stdDevs[-1]))
 
 def centroid(d):
     p = np.average(d, axis=0)
@@ -71,12 +72,12 @@ def doStuff(filename):
 
 # if you did every permutation of some combination of R, N, and K, then fill them in to these arrays and
 # the script will do all of them automatically
-R = []#30]
-N = []#25,100,200]
-K = []#1,5,10,20]
+R = [30]
+N = [25,100,200]
+K = [1,5,10,20]
 
 # if there is some other data, put the file name without the extension in this list
-misc = ['R30N200K5']
+misc = ['R10N200K5','R70N200K5','R30N500K5']
 
 for r in R:
     for n in N:
